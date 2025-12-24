@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/types/html2pdf.d.ts","./src/types/papaparse.d.ts","./src/ui/app.tsx","./src/ui/components/openclosebars.tsx","./src/ui/components/summarybar.tsx","./src/utils/exportpdf.ts"],"version":"5.9.2"}

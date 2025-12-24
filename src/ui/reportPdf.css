@@ -1,0 +1,133 @@
+/* Estilos aplicados somente durante a exportação em PDF (classe adicionada dinamicamente) */
+
+.pdf-export .report-meta {
+  font-size: 12px !important;
+}
+
+.pdf-export .report-status {
+  font-size: 12px !important;
+}
+
+/* Remover o subtítulo acima da tabela apenas no PDF */
+.pdf-export .report-table-subtitle {
+  display: none !important;
+}
+
+/* Tamanhos de fonte da tabela no PDF */
+.pdf-export .MuiTableCell-head {
+  font-size: 12px !important;
+}
+
+.pdf-export .MuiTableCell-body {
+  font-size: 11px !important;
+}
+
+/* Títulos dos cards (gráficos) no PDF */
+.pdf-export .MuiCardHeader-title {
+  font-size: 12px !important; /* igual ao cabeçalho da tabela */
+  text-align: center;
+}
+
+/* Eixos/legendas dos gráficos (12px) */
+.pdf-export .recharts-cartesian-axis-tick-value,
+.pdf-export .recharts-legend-item-text,
+.pdf-export .recharts-label,
+.pdf-export .recharts-reference-line-label {
+  font-size: 12px !important;
+}
+
+/* Legenda do gráfico de análise (Summary) em 10px no PDF */
+.pdf-export .chart-summary .recharts-legend-item-text {
+  font-size: 10px !important;
+}
+
+/* Texto genérico em gráficos para herdar 12px onde aplicável */
+.pdf-export .recharts-wrapper text {
+  font-size: 12px !important;
+}
+
+/* Evitar quebra de gráficos entre páginas */
+.pdf-export .chart-block,
+.pdf-export .chart-card {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* Ocultar cabeçalho HTML dentro do container quando exportando (evita duplicidade com cabeçalho desenhado) */
+.pdf-export .report-header-html {
+  display: none !important;
+}
+
+/* Ajustes de dimensões no PDF */
+.pdf-export .chart-times .chart-inner {
+  height: 260px !important; /* reduzir altura da caixa dos gráficos de tempos */
+}
+
+.pdf-export .chart-summary .chart-inner {
+  height: 420px !important; /* dar mais espaço ao gráfico de análise */
+}
+
+/* Forçar o gráfico de análise a não quebrar e preferir largura total */
+.pdf-export .chart-summary {
+  width: 100% !important;
+  display: block;
+}
+
+/* Reduzir ligeiramente a largura útil do gráfico de análise no PDF (−4pt) */
+.pdf-export .chart-summary .recharts-responsive-container {
+  width: calc(100% - 4pt) !important;
+}
+
+/* Alinhar a legenda ao topo da área útil do gráfico (margem top do BarChart = 16) */
+.pdf-export .chart-summary .recharts-legend-wrapper {
+  top: 16px !important;
+}
+
+/* (revertido) remoção de ajustes de posicionamento da área plotada no PDF */
+
+/* Garantir logo com largura 180px também no PDF */
+.pdf-export img[alt="Petrobras"] {
+  width: 180px !important;
+  height: auto !important;
+}
+
+/* Banner de título (versão web; o HTML do cabeçalho é oculto no PDF) */
+.report-title-banner {
+  background: #008542;
+  color: #fff;
+  font-weight: 700;
+  font-size: 30px;
+  padding: 8px 12px;
+  margin-bottom: 25px;
+  line-height: 1.2;
+  /* full-bleed across the viewport width */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* Usar imagem snapshot do gráfico de análise no PDF para preservar proporções
+   - Mantém a wrapper visível para exibir a legenda
+   - Oculta apenas o SVG do gráfico (eixos, barras etc.)
+*/
+.pdf-export .chart-summary .chart-inner {
+  position: relative;
+}
+.pdf-export .chart-summary .recharts-wrapper {
+  position: relative;
+  z-index: 1; /* legenda por cima da imagem */
+}
+.pdf-export .chart-summary svg.recharts-surface {
+  display: none !important; /* oculta desenho do gráfico, manter legenda */
+}
+.pdf-export #summary-chart-pdf-img {
+  display: block !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: auto !important; /* manter proporção do snapshot */
+  z-index: 0;
+}
