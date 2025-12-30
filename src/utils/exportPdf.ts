@@ -64,7 +64,7 @@ export async function exportElementToPdf(el: HTMLElement, { fileName, marginCm =
 
     let logo: { dataUrl: string; width: number; height: number } | null = null;
     if (headerFooter) {
-      const logoUrl = headerFooter.logoUrl || '/logo_petrobras.png';
+      const logoUrl = headerFooter.logoUrl || (import.meta.env.BASE_URL + 'logo_petrobras.png');
       try {
         logo = await loadImageDataUrl(logoUrl);
       } catch {

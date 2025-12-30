@@ -25,16 +25,12 @@ import 'dayjs/locale/pt-br';
 import type { ChangeEvent } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Papa from 'papaparse';
+import { LimitEntry } from '../types/limits';
 import { exportElementToPdf } from '../utils/exportPdf';
 import { svgElementToPngDataUrl } from '../utils/svgToPng';
 import './reportPdf.css';
 
-type LimiteRow = {
-  TAG: string;
-  LimiteFechamento: string;
-  LimiteAbertura: string;
-  TagBusca: string;
-};
+// Fonte de limites agora vem de public/limites.json
 
 type Status = 'Todos' | 'Normal' | 'Falha';
 
@@ -88,13 +84,11 @@ export default function App() {
   const reportRef = useRef<HTMLDivElement | null>(null);
   const summaryPngRef = useRef<HTMLImageElement | null>(null);
 
-  // Load Tag list from public/limites.csv (TagBusca column)
+  // Load Tag list from public/limites.json (TagBusca column)
   useEffect(() => {
-  fetch('/limites.csv')
-      .then((res) => res.text())
-      .then((csvText) => {
-    const parsed: any = Papa.parse(csvText, { header: true });
-    const rows = (parsed.data || []) as any as LimiteRow[];
+    fetch(`${import.meta.env.BASE_URL}limites.json`)
+      .then((res) => res.json())
+      .then((rows: LimitEntry[]) => {
         const unique = Array.from(new Set(rows.map((r) => r.TagBusca?.trim()).filter(Boolean) as string[]));
         unique.sort((a, b) => a.localeCompare(b, 'pt-BR'));
         setTags(unique);
@@ -103,13 +97,13 @@ export default function App() {
         for (const r of rows) {
           const key = r.TagBusca?.trim();
           if (!key) continue;
-          const open = Number(r.LimiteAbertura);
-          const close = Number(r.LimiteFechamento);
-          if (!Number.isNaN(open) && !Number.isNaN(close)) map[key] = { open, close };
+          const open = r.LimiteAbertura;
+          const close = r.LimiteFechamento;
+          if (Number.isFinite(open) && Number.isFinite(close)) map[key] = { open, close };
         }
         setLimitsByTag(map);
       })
-      .catch(() => setMessage('Não foi possível carregar limites.csv'));
+      .catch(() => setMessage('Não foi possível carregar limites.json'));
   }, []);
 
   const canSearch = useMemo(() => !!selectedTag && !!startDate && !!endDate && !!file, [selectedTag, startDate, endDate, file]);
@@ -363,7 +357,7 @@ export default function App() {
           title,
           tag: tagMeta,
           period: periodMeta,
-          logoUrl: '/logo_petrobras.png',
+          logoUrl: import.meta.env.BASE_URL + 'logo_petrobras.png',
         },
       });
     } finally {
@@ -464,7 +458,7 @@ export default function App() {
           <Box mt={3} ref={reportRef}>
             {/* Cabeçalho HTML (ocultado só no PDF, mantido na web) */}
             <Box className="report-header-html" display="flex" alignItems="center" mb={2} sx={{ borderBottom: '1px solid #e0e0e0', pb: 1 }}>
-              <img src="/logo_petrobras.png" alt="Petrobras" style={{ width: 180, height: 'auto', marginRight: 12 }} />
+              <img src={import.meta.env.BASE_URL + 'logo_petrobras.png'} alt="Petrobras" style={{ width: 180, height: 'auto', marginRight: 12 }} />
               <Box>
                 <Typography variant="h6">FPSO P-58 - Relatório de atuação de válvulas</Typography>
                 <Typography variant="body2" color="text.secondary" className="report-meta">
